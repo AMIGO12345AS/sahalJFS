@@ -50,9 +50,9 @@ def get_items():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@app.route('/api/customers', methods=['GET'])
-def get_customers():
-    """Fetch contacts (customers) from Zoho Books."""
+@app.route('/api/contacts', methods=['GET'])
+def get_contacts():
+    """Fetch contacts from Zoho Books."""
     try:
         headers = get_headers()
         url = f"{API_DOMAIN}/books/v3/contacts"
@@ -60,9 +60,8 @@ def get_customers():
         response.raise_for_status()
         data = response.json()
         contacts = data.get('contacts', [])
-        # Return all contacts (in Zoho Books, contacts are typically customers)
         return jsonify({
-            'customers': contacts,
+            'contacts': contacts,
             'count': len(contacts)
         })
     except Exception as e:
