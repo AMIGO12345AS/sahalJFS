@@ -130,9 +130,11 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label for="customer_id" class="form-label">Customer ID</label>
-                                        <input type="text" class="form-control" id="customer_id" value="6630269000001113041" required>
-                                        <small class="form-text text-muted">Use the customer ID from Zoho Books.</small>
+                                        <label for="customer_id" class="form-label">Customer</label>
+                                        <select class="form-control" id="customer_id" required>
+                                            <option value="">Loading customers...</option>
+                                        </select>
+                                        <small class="form-text text-muted">Select a customer from Zoho Books.</small>
                                     </div>
                                     <div class="mb-3">
                                         <label for="date" class="form-label">Invoice Date</label>
@@ -159,7 +161,10 @@
                                 <div class="line-item row mb-3">
                                     <div class="col-md-4">
                                         <label class="form-label">Item Name</label>
-                                        <input type="text" class="form-control item-name" placeholder="Sample Product" required>
+                                        <input type="text" class="form-control item-name" placeholder="Type to search..." list="items-datalist" required>
+                                        <datalist id="items-datalist">
+                                            <!-- Options will be populated by JavaScript -->
+                                        </datalist>
                                     </div>
                                     <div class="col-md-3">
                                         <label class="form-label">Quantity</label>
@@ -207,9 +212,10 @@
             due.setDate(due.getDate() + 30);
             $('#due_date').val(due.toISOString().split('T')[0]);
 
-            // Fetch invoices and items on page load
+            // Fetch invoices, items, and customers on page load
             fetchInvoices();
             fetchItems();
+            fetchCustomers();
         });
 
         // Fetch invoices via AJAX
@@ -268,12 +274,41 @@
                         `;
                         tbody.append(row);
                     });
+                    // Populate items datalist
+                    populateItemsDatalist(data.items);
                 } else {
                     tbody.append('<tr><td colspan="6" class="text-center">No items found.</td></tr>');
                 }
             }).fail(function() {
                 $('#loading-items').hide();
                 alert('Error fetching items.');
+            });
+        }
+
+        // Populate items datalist for searchable dropdown
+        function populateItemsDatalist(items) {
+            const datalist = $('#items-datalist');
+            datalist.empty();
+            items.forEach(item => {
+                datalist.append(`<option value="${item.name}">${item.name} - ${item.rate} ${item.currency_code || ''}</option>`);
+            });
+        }
+
+        // Fetch customers via AJAX
+        function fetchCustomers() {
+            $.get('/api/customers', function(data) {
+                const select = $('#customer_id');
+                select.empty();
+                if (data.customers && data.customers.length) {
+                    select.append('<option value="">Select a customer</option>');
+                    data.customers.forEach(customer => {
+                        select.append(`<option value="${customer.customer_id}">${customer.customer_name} (${customer.email || ''})</option>`);
+                    });
+                } else {
+                    select.append('<option value="">No customers found</option>');
+                }
+            }).fail(function() {
+                alert('Error fetching customers.');
             });
         }
 
@@ -287,7 +322,7 @@
             const lineItem = `
                 <div class="line-item row mb-3">
                     <div class="col-md-4">
-                        <input type="text" class="form-control item-name" placeholder="Sample Product" required>
+                        <input type="text" class="form-control item-name" placeholder="Type to search..." list="items-datalist" required>
                     </div>
                     <div class="col-md-3">
                         <input type="number" class="form-control quantity" min="1" value="1" required>

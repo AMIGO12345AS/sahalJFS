@@ -50,6 +50,23 @@ def get_items():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@app.route('/api/customers', methods=['GET'])
+def get_customers():
+    """Fetch customers from Zoho Books."""
+    try:
+        headers = get_headers()
+        url = f"{API_DOMAIN}/books/v3/customers"
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()
+        data = response.json()
+        customers = data.get('customers', [])
+        return jsonify({
+            'customers': customers,
+            'count': len(customers)
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/api/invoices', methods=['POST'])
 def create_invoice():
     """Create a new invoice in Zoho Books."""
