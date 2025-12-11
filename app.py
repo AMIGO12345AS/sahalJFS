@@ -52,14 +52,16 @@ def get_items():
 
 @app.route('/api/customers', methods=['GET'])
 def get_customers():
-    """Fetch customers from Zoho Books."""
+    """Fetch contacts (customers) from Zoho Books."""
     try:
         headers = get_headers()
-        url = f"{API_DOMAIN}/books/v3/customers"
+        url = f"{API_DOMAIN}/books/v3/contacts"
         response = requests.get(url, headers=headers)
         response.raise_for_status()
         data = response.json()
-        customers = data.get('customers', [])
+        contacts = data.get('contacts', [])
+        # Filter only customers (contacts with customer type)
+        customers = [contact for contact in contacts if contact.get('customer_type') == 'customer']
         return jsonify({
             'customers': customers,
             'count': len(customers)

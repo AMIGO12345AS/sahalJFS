@@ -302,7 +302,7 @@
                 if (data.customers && data.customers.length) {
                     select.append('<option value="">Select a customer</option>');
                     data.customers.forEach(customer => {
-                        select.append(`<option value="${customer.customer_id}">${customer.customer_name} (${customer.email || ''})</option>`);
+                        select.append(`<option value="${customer.contact_id}">${customer.contact_name} (${customer.email || ''})</option>`);
                     });
                 } else {
                     select.append('<option value="">No customers found</option>');
