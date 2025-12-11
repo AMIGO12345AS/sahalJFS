@@ -60,11 +60,10 @@ def get_customers():
         response.raise_for_status()
         data = response.json()
         contacts = data.get('contacts', [])
-        # Filter only customers (contacts with customer type)
-        customers = [contact for contact in contacts if contact.get('customer_type') == 'customer']
+        # Return all contacts (all are typically customers in Zoho Books)
         return jsonify({
-            'customers': customers,
-            'count': len(customers)
+            'customers': contacts,
+            'count': len(contacts)
         })
     except Exception as e:
         return jsonify({'error': str(e)}), 500
