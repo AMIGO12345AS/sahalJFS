@@ -2,12 +2,12 @@ from flask import Flask, render_template, request, jsonify
 import requests
 import json
 from datetime import datetime
-from zoho_token_manager import get_headers, get_api_domain
+from zoho_token_manager_serverless import get_headers, get_api_domain
 
 app = Flask(__name__)
 
 # Configuration
-ORGANIZATION_ID = "892673756"
+# ORGANIZATION_ID is now fetched from environment by token manager
 API_DOMAIN = get_api_domain()
 
 @app.route('/')
@@ -19,7 +19,7 @@ def index():
 def get_invoices():
     """Fetch invoices from Zoho Books."""
     try:
-        headers = get_headers(ORGANIZATION_ID)
+        headers = get_headers()
         url = f"{API_DOMAIN}/books/v3/invoices"
         response = requests.get(url, headers=headers)
         response.raise_for_status()
@@ -37,7 +37,7 @@ def get_invoices():
 def get_items():
     """Fetch items from Zoho Books."""
     try:
-        headers = get_headers(ORGANIZATION_ID)
+        headers = get_headers()
         url = f"{API_DOMAIN}/books/v3/items"
         response = requests.get(url, headers=headers)
         response.raise_for_status()
@@ -72,7 +72,7 @@ def create_invoice():
         if 'notes' in invoice_data:
             payload['notes'] = invoice_data['notes']
         
-        headers = get_headers(ORGANIZATION_ID)
+        headers = get_headers()
         url = f"{API_DOMAIN}/books/v3/invoices"
         response = requests.post(url, headers=headers, json=payload)
         response.raise_for_status()
