@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,44 +14,55 @@
             background-color: #f8f9fa;
             padding-top: 20px;
         }
+
         .card {
             margin-bottom: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
+
         .table-container {
             max-height: 500px;
             overflow-y: auto;
         }
+
         .btn-action {
             margin-right: 5px;
         }
+
         .tab-content {
             padding-top: 20px;
         }
+
         .spinner-border {
             display: none;
         }
+
         #loading {
             text-align: center;
             padding: 20px;
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <h1 class="text-center mb-4"><i class="fas fa-book"></i> Zoho Books Manager</h1>
         <ul class="nav nav-tabs" id="myTab" role="tablist">
             <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="invoices-tab" data-bs-toggle="tab" data-bs-target="#invoices" type="button" role="tab">Invoices</button>
+                <button class="nav-link active" id="invoices-tab" data-bs-toggle="tab" data-bs-target="#invoices"
+                    type="button" role="tab">Invoices</button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link" id="items-tab" data-bs-toggle="tab" data-bs-target="#items" type="button" role="tab">Items</button>
+                <button class="nav-link" id="items-tab" data-bs-toggle="tab" data-bs-target="#items" type="button"
+                    role="tab">Items</button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link" id="contacts-tab" data-bs-toggle="tab" data-bs-target="#contacts" type="button" role="tab">Contacts</button>
+                <button class="nav-link" id="contacts-tab" data-bs-toggle="tab" data-bs-target="#contacts" type="button"
+                    role="tab">Contacts</button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link" id="create-tab" data-bs-toggle="tab" data-bs-target="#create" type="button" role="tab">Create Invoice</button>
+                <button class="nav-link" id="create-tab" data-bs-toggle="tab" data-bs-target="#create" type="button"
+                    role="tab">Create Invoice</button>
             </li>
         </ul>
         <div class="tab-content" id="myTabContent">
@@ -188,30 +200,61 @@
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label for="notes" class="form-label">Notes</label>
-                                        <textarea class="form-control" id="notes" rows="3">Thank you for your business!</textarea>
+                                        <textarea class="form-control" id="notes"
+                                            rows="3">Thank you for your business!</textarea>
                                     </div>
                                 </div>
                             </div>
                             <h5>Line Items</h5>
+                            <div class="row mb-2 fw-bold d-none d-md-flex">
+                                <div class="col-md-3">Item Name</div>
+                                <div class="col-md-2" style="background-color: #fff3cd;">Provision (Est.)</div>
+                                <div class="col-md-2" style="background-color: #d1e7dd;">Actual Cost</div>
+                                <div class="col-md-2">Sell Rate</div>
+                                <div class="col-md-1">Qty</div>
+                                <div class="col-md-2">Profit (Est/Act)</div>
+                            </div>
                             <div id="line-items">
-                                <div class="line-item row mb-3">
-                                    <div class="col-md-4">
-                                        <label class="form-label">Item Name</label>
+                                <div class="line-item row mb-3 border-bottom pb-3">
+                                    <div class="col-md-3 mb-2">
+                                        <label class="form-label d-md-none">Item Name</label>
                                         <select class="form-select item-select" required>
                                             <option value="" selected disabled>Select an item</option>
                                         </select>
                                     </div>
-                                    <div class="col-md-3">
-                                        <label class="form-label">Quantity</label>
+                                    <div class="col-md-2 mb-2">
+                                        <label class="form-label d-md-none">Provision</label>
+                                        <input type="number" class="form-control provision-cost" step="0.01"
+                                            placeholder="Est. Cost" style="background-color: #fff3cd;">
+                                    </div>
+                                    <div class="col-md-2 mb-2">
+                                        <label class="form-label d-md-none">Actual Cost</label>
+                                        <input type="number" class="form-control actual-cost" step="0.01"
+                                            placeholder="Actual Cost" style="background-color: #d1e7dd;">
+                                    </div>
+                                    <div class="col-md-2 mb-2">
+                                        <label class="form-label d-md-none">Sell Rate</label>
+                                        <input type="number" class="form-control rate" step="0.01" value="0.00"
+                                            required>
+                                    </div>
+                                    <div class="col-md-1 mb-2">
+                                        <label class="form-label d-md-none">Quantity</label>
                                         <input type="number" class="form-control quantity" min="1" value="1" required>
                                     </div>
-                                    <div class="col-md-3">
-                                        <label class="form-label">Rate</label>
-                                        <input type="number" class="form-control rate" step="0.01" value="100.0" required>
+                                    <div class="col-md-2 mb-2">
+                                        <label class="form-label d-md-none">Profit</label>
+                                        <div class="input-group input-group-sm">
+                                            <span class="input-group-text" title="Estimated Profit">Est</span>
+                                            <input type="text" class="form-control est-profit" readonly disabled>
+                                        </div>
+                                        <div class="input-group input-group-sm mt-1">
+                                            <span class="input-group-text" title="Actual Profit">Act</span>
+                                            <input type="text" class="form-control act-profit" readonly disabled>
+                                        </div>
                                     </div>
-                                    <div class="col-md-2">
-                                        <label class="form-label">&nbsp;</label>
-                                        <button type="button" class="btn btn-danger btn-sm w-100 remove-line"><i class="fas fa-trash"></i></button>
+                                    <div class="col-12 text-end">
+                                        <button type="button" class="btn btn-danger btn-sm remove-line"><i
+                                                class="fas fa-trash"></i> Remove Line</button>
                                     </div>
                                 </div>
                             </div>
@@ -244,7 +287,7 @@
         let globalItems = [];
         let globalContacts = [];
 
-        $(document).ready(function() {
+        $(document).ready(function () {
             const today = new Date().toISOString().split('T')[0];
             $('#date').val(today);
             const due = new Date();
@@ -260,7 +303,7 @@
         // Fetch invoices via AJAX
         function fetchInvoices() {
             $('#loading-invoices').show();
-            $.get('/api/invoices', function(data) {
+            $.get('/api/invoices', function (data) {
                 $('#loading-invoices').hide();
                 const tbody = $('#invoices-body');
                 tbody.empty();
@@ -286,7 +329,7 @@
                 } else {
                     tbody.append('<tr><td colspan="8" class="text-center">No invoices found.</td></tr>');
                 }
-            }).fail(function() {
+            }).fail(function () {
                 $('#loading-invoices').hide();
                 alert('Error fetching invoices.');
             });
@@ -296,11 +339,11 @@
         // Fetch items and populate dropdowns
         function fetchItemsAndPopulate() {
             $('#loading-items').show();
-            $.get('/api/items', function(data) {
+            $.get('/api/items', function (data) {
                 $('#loading-items').hide();
                 const tbody = $('#items-body');
                 tbody.empty();
-                
+
                 globalItems = data.items || [];
 
                 if (globalItems.length) {
@@ -318,13 +361,13 @@
                         `;
                         tbody.append(row);
                     });
-                    
+
                     // Populate Dropdowns
                     populateItemDropdowns();
                 } else {
                     tbody.append('<tr><td colspan="6" class="text-center">No items found.</td></tr>');
                 }
-            }).fail(function() {
+            }).fail(function () {
                 $('#loading-items').hide();
                 alert('Error fetching items.');
             });
@@ -333,19 +376,19 @@
         // Helper to populate all item dropdowns
         function populateItemDropdowns(context = document) {
             const selects = $(context).find('.item-select');
-            selects.each(function() {
+            selects.each(function () {
                 const select = $(this);
                 // Keep existing value if any
                 const currentVal = select.val();
-                
+
                 // Clear except placeholder
                 select.find('option:not(:first)').remove();
-                
+
                 globalItems.forEach(item => {
                     select.append(`<option value="${item.item_id}" data-rate="${item.rate}">${item.name}</option>`);
                 });
 
-                if(currentVal) select.val(currentVal);
+                if (currentVal) select.val(currentVal);
             });
         }
 
@@ -353,12 +396,12 @@
         // Fetch contacts and populate dropdown
         function fetchContactsAndPopulate() {
             $('#loading-contacts').show();
-            $.get('/api/contacts', function(data) {
+            $.get('/api/contacts', function (data) {
                 $('#loading-contacts').hide();
                 const tbody = $('#contacts-body');
                 tbody.empty();
                 const contactSelect = $('#customer_id');
-                
+
                 globalContacts = data.contacts || [];
 
                 if (globalContacts.length) {
@@ -375,14 +418,14 @@
                             </tr>
                         `;
                         tbody.append(row);
-                        
+
                         // Populate Dropdown
                         contactSelect.append(`<option value="${contact.contact_id}">${contact.contact_name}</option>`);
                     });
                 } else {
                     tbody.append('<tr><td colspan="6" class="text-center">No contacts found.</td></tr>');
                 }
-            }).fail(function() {
+            }).fail(function () {
                 $('#loading-contacts').hide();
                 alert('Error fetching contacts.');
             });
@@ -395,22 +438,45 @@
 
         // Add line item
         // Add line item
-        $('#add-line').click(function() {
+        // Add line item
+        $('#add-line').click(function () {
             const lineItem = `
-                <div class="line-item row mb-3">
-                    <div class="col-md-4">
+                <div class="line-item row mb-3 border-bottom pb-3">
+                    <div class="col-md-3 mb-2">
+                        <label class="form-label d-md-none">Item Name</label>
                         <select class="form-select item-select" required>
                              <option value="" selected disabled>Select an item</option>
                         </select>
                     </div>
-                    <div class="col-md-3">
-                        <input type="number" class="form-control quantity" min="1" value="1" required>
+                    <div class="col-md-2 mb-2">
+                        <label class="form-label d-md-none">Provision</label>
+                        <input type="number" class="form-control provision-cost" step="0.01" placeholder="Est. Cost" style="background-color: #fff3cd;">
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2 mb-2">
+                        <label class="form-label d-md-none">Actual Cost</label>
+                         <input type="number" class="form-control actual-cost" step="0.01" placeholder="Actual Cost" style="background-color: #d1e7dd;">
+                    </div>
+                    <div class="col-md-2 mb-2">
+                         <label class="form-label d-md-none">Sell Rate</label>
                         <input type="number" class="form-control rate" step="0.01" value="0.00" required>
                     </div>
-                    <div class="col-md-2">
-                        <button type="button" class="btn btn-danger btn-sm w-100 remove-line"><i class="fas fa-trash"></i></button>
+                    <div class="col-md-1 mb-2">
+                        <label class="form-label d-md-none">Quantity</label>
+                        <input type="number" class="form-control quantity" min="1" value="1" required>
+                    </div>
+                    <div class="col-md-2 mb-2">
+                            <label class="form-label d-md-none">Profit</label>
+                            <div class="input-group input-group-sm">
+                            <span class="input-group-text">Est</span>
+                            <input type="text" class="form-control est-profit" readonly disabled>
+                            </div>
+                            <div class="input-group input-group-sm mt-1">
+                            <span class="input-group-text">Act</span>
+                            <input type="text" class="form-control act-profit" readonly disabled>
+                            </div>
+                    </div>
+                     <div class="col-12 text-end">
+                        <button type="button" class="btn btn-danger btn-sm remove-line"><i class="fas fa-trash"></i> Remove Line</button>
                     </div>
                 </div>
             `;
@@ -418,29 +484,68 @@
             populateItemDropdowns(newLine);
         });
 
-        // Auto-fill rate on item selection
-        $(document).on('change', '.item-select', function() {
+        // Auto-fill rate on item selection and trigger recalc
+        $(document).on('change', '.item-select', function () {
             const selectedOption = $(this).find('option:selected');
             const rate = selectedOption.data('rate');
             const row = $(this).closest('.line-item');
             if (rate !== undefined) {
                 row.find('.rate').val(rate);
             }
+            calculateRowProfit(row);
         });
 
+        // Loop calculations on inputs
+        $(document).on('input', '.rate, .provision-cost, .actual-cost', function () {
+            const row = $(this).closest('.line-item');
+            calculateRowProfit(row);
+        });
+
+        function calculateRowProfit(row) {
+            const sellRate = parseFloat(row.find('.rate').val()) || 0;
+            const provision = parseFloat(row.find('.provision-cost').val()) || 0;
+            const actual = parseFloat(row.find('.actual-cost').val()) || 0;
+
+            const estProfit = sellRate - provision;
+            const actProfit = sellRate - actual;
+
+            row.find('.est-profit').val(estProfit.toFixed(2));
+
+            const actProfitInput = row.find('.act-profit');
+            actProfitInput.val(actProfit.toFixed(2));
+
+            // Logic: Alert if Actual Cost > Provision (Loss on Estimate)
+            const actCostInput = row.find('.actual-cost');
+            if (actual > 0 && actual > provision) {
+                actCostInput.addClass('bg-danger text-white').removeClass('bg-success');
+                // Also warn on profit if needed, but styling the cost input is direct
+            } else {
+                actCostInput.css('background-color', '#d1e7dd').removeClass('bg-danger text-white');
+            }
+        }
+
         // Remove line item
-        $(document).on('click', '.remove-line', function() {
+        $(document).on('click', '.remove-line', function () {
             $(this).closest('.line-item').remove();
         });
 
         // Submit invoice form
-        $('#invoice-form').submit(function(event) {
+        $('#invoice-form').submit(function (event) {
             event.preventDefault();
             const lineItems = [];
-            $('.line-item').each(function() {
+            $('.line-item').each(function () {
+                const prov = $(this).find('.provision-cost').val();
+                const act = $(this).find('.actual-cost').val();
+                const itemName = $(this).find('.item-select option:selected').text();
+
+                // Append Provision and Actual to description
+                // Note: Zoho API Description field max length check might be needed if very long
+                const desc = ` [Prov: ${prov || 0}, Act: ${act || 0}]`;
+
                 lineItems.push({
-                    item_id: $(this).find('.item-select').val(), // Use item_id for backend if needed, or name if API expects name
-                    name: $(this).find('.item-select option:selected').text(), // Assuming backend still wants name
+                    item_id: $(this).find('.item-select').val(),
+                    name: itemName,
+                    description: (itemName + desc).substring(0, 500), // Append info to description
                     quantity: parseFloat($(this).find('.quantity').val()),
                     rate: parseFloat($(this).find('.rate').val())
                 });
@@ -458,7 +563,7 @@
                 method: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify(invoiceData),
-                success: function(response) {
+                success: function (response) {
                     $('#create-result').html(`
                         <div class="alert alert-success">
                             <strong>Success!</strong> Invoice created with ID: ${response.invoice_id}
@@ -467,7 +572,7 @@
                     `);
                     // Clear form? optionally
                 },
-                error: function(xhr) {
+                error: function (xhr) {
                     $('#create-result').html(`
                         <div class="alert alert-danger">
                             <strong>Error!</strong> ${xhr.responseJSON ? xhr.responseJSON.message : 'Unknown error'}
@@ -478,4 +583,5 @@
         });
     </script>
 </body>
+
 </html>
