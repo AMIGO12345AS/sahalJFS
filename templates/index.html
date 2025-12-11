@@ -167,9 +167,10 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label for="customer_id" class="form-label">Customer ID</label>
-                                        <input type="text" class="form-control" id="customer_id" value="6630269000001113041" required>
-                                        <small class="form-text text-muted">Use the customer ID from Zoho Books.</small>
+                                        <label for="customer_id" class="form-label">Customer</label>
+                                        <select class="form-select" id="customer_id" required>
+                                            <option value="" selected disabled>Select a customer</option>
+                                        </select>
                                     </div>
                                     <div class="mb-3">
                                         <label for="date" class="form-label">Invoice Date</label>
@@ -196,7 +197,9 @@
                                 <div class="line-item row mb-3">
                                     <div class="col-md-4">
                                         <label class="form-label">Item Name</label>
-                                        <input type="text" class="form-control item-name" placeholder="Sample Product" required>
+                                        <select class="form-select item-select" required>
+                                            <option value="" selected disabled>Select an item</option>
+                                        </select>
                                     </div>
                                     <div class="col-md-3">
                                         <label class="form-label">Quantity</label>
@@ -237,6 +240,10 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         // Set today's date as default
+        // Global maps to store data for dropdowns
+        let globalItems = [];
+        let globalContacts = [];
+
         $(document).ready(function() {
             const today = new Date().toISOString().split('T')[0];
             $('#date').val(today);
@@ -246,7 +253,8 @@
 
             // Fetch invoices and items on page load
             fetchInvoices();
-            fetchItems();
+            fetchItemsAndPopulate();
+            fetchContactsAndPopulate();
         });
 
         // Fetch invoices via AJAX
@@ -285,14 +293,19 @@
         }
 
         // Fetch items via AJAX
-        function fetchItems() {
+        // Fetch items and populate dropdowns
+        function fetchItemsAndPopulate() {
             $('#loading-items').show();
             $.get('/api/items', function(data) {
                 $('#loading-items').hide();
                 const tbody = $('#items-body');
                 tbody.empty();
-                if (data.items && data.items.length) {
-                    data.items.forEach(item => {
+                
+                globalItems = data.items || [];
+
+                if (globalItems.length) {
+                    globalItems.forEach(item => {
+                        // Populate Table
                         const row = `
                             <tr>
                                 <td>${item.item_id.substring(0, 10)}...</td>
@@ -305,6 +318,9 @@
                         `;
                         tbody.append(row);
                     });
+                    
+                    // Populate Dropdowns
+                    populateItemDropdowns();
                 } else {
                     tbody.append('<tr><td colspan="6" class="text-center">No items found.</td></tr>');
                 }
@@ -314,15 +330,40 @@
             });
         }
 
+        // Helper to populate all item dropdowns
+        function populateItemDropdowns(context = document) {
+            const selects = $(context).find('.item-select');
+            selects.each(function() {
+                const select = $(this);
+                // Keep existing value if any
+                const currentVal = select.val();
+                
+                // Clear except placeholder
+                select.find('option:not(:first)').remove();
+                
+                globalItems.forEach(item => {
+                    select.append(`<option value="${item.item_id}" data-rate="${item.rate}">${item.name}</option>`);
+                });
+
+                if(currentVal) select.val(currentVal);
+            });
+        }
+
         // Fetch contacts via AJAX
-        function fetchContacts() {
+        // Fetch contacts and populate dropdown
+        function fetchContactsAndPopulate() {
             $('#loading-contacts').show();
             $.get('/api/contacts', function(data) {
                 $('#loading-contacts').hide();
                 const tbody = $('#contacts-body');
                 tbody.empty();
-                if (data.contacts && data.contacts.length) {
-                    data.contacts.forEach(contact => {
+                const contactSelect = $('#customer_id');
+                
+                globalContacts = data.contacts || [];
+
+                if (globalContacts.length) {
+                    globalContacts.forEach(contact => {
+                        // Populate Table
                         const row = `
                             <tr>
                                 <td>${contact.contact_id ? contact.contact_id.substring(0, 10) + '...' : ''}</td>
@@ -334,6 +375,9 @@
                             </tr>
                         `;
                         tbody.append(row);
+                        
+                        // Populate Dropdown
+                        contactSelect.append(`<option value="${contact.contact_id}">${contact.contact_name}</option>`);
                     });
                 } else {
                     tbody.append('<tr><td colspan="6" class="text-center">No contacts found.</td></tr>');
@@ -350,24 +394,38 @@
         }
 
         // Add line item
+        // Add line item
         $('#add-line').click(function() {
             const lineItem = `
                 <div class="line-item row mb-3">
                     <div class="col-md-4">
-                        <input type="text" class="form-control item-name" placeholder="Sample Product" required>
+                        <select class="form-select item-select" required>
+                             <option value="" selected disabled>Select an item</option>
+                        </select>
                     </div>
                     <div class="col-md-3">
                         <input type="number" class="form-control quantity" min="1" value="1" required>
                     </div>
                     <div class="col-md-3">
-                        <input type="number" class="form-control rate" step="0.01" value="100.0" required>
+                        <input type="number" class="form-control rate" step="0.01" value="0.00" required>
                     </div>
                     <div class="col-md-2">
                         <button type="button" class="btn btn-danger btn-sm w-100 remove-line"><i class="fas fa-trash"></i></button>
                     </div>
                 </div>
             `;
-            $('#line-items').append(lineItem);
+            const newLine = $(lineItem).appendTo('#line-items');
+            populateItemDropdowns(newLine);
+        });
+
+        // Auto-fill rate on item selection
+        $(document).on('change', '.item-select', function() {
+            const selectedOption = $(this).find('option:selected');
+            const rate = selectedOption.data('rate');
+            const row = $(this).closest('.line-item');
+            if (rate !== undefined) {
+                row.find('.rate').val(rate);
+            }
         });
 
         // Remove line item
@@ -381,7 +439,8 @@
             const lineItems = [];
             $('.line-item').each(function() {
                 lineItems.push({
-                    name: $(this).find('.item-name').val(),
+                    item_id: $(this).find('.item-select').val(), // Use item_id for backend if needed, or name if API expects name
+                    name: $(this).find('.item-select option:selected').text(), // Assuming backend still wants name
                     quantity: parseFloat($(this).find('.quantity').val()),
                     rate: parseFloat($(this).find('.rate').val())
                 });
